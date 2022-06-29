@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.169" />
+        <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/drawable-v24/scrim.xml" value="0.169" />
         <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/drawable-v24/scrim_topdown.xml" value="0.169" />
         <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/drawable/bg_bottom_gradient.xml" value="0.169" />
         <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/drawable/ic_launcher_background.xml" value="0.169" />
+        <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/drawable/ic_menu.xml" value="0.169" />
         <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/drawable/item_news.xml" value="0.169" />
         <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/drawable/scrim.xml" value="0.121" />
         <entry key="..\:/Users/yeuai/AndroidStudioProjects/News88/app/src/main/res/layout/activity_main.xml" value="0.136" />

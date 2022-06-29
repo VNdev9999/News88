@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,12 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.news88.R;
 import com.example.news88.control.api.RetrofitClient;
+import com.example.news88.databinding.FragmentMainBinding;
 import com.example.news88.model.Article;
 import com.example.news88.model.TopNews;
 import com.example.news88.util.Constanst;
 import com.example.news88.view.adapter.NewsAdapter;
 import com.example.news88.view.adapter.TopNewsAdapter;
-import com.example.news88.viewmodel.SharedViewModel;
+import com.example.news88.viewmodel.ArticleViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,59 +38,51 @@ public class MainFragment extends Fragment {
     private NewsAdapter newsAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<Article> mListTopNews = new ArrayList<Article>();
-    private SharedViewModel sharedViewModel;
+    private ArticleViewModel articleViewModel;
+    private FragmentMainBinding binding;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        fetchTopNews();
-        fetchNews();
-
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
+        articleViewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
 
-        rcvTopNews = (RecyclerView) view.findViewById(R.id.rcv_top_news);
-        rcvEveryNews = (RecyclerView) view.findViewById(R.id.rcv_every_news);
-
-        return view;
+        fetchTopNews();
+        fetchNews();
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         topNewsAdapter = new TopNewsAdapter();
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-//        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
 
     }
 
     public void fetchTopNews() {
-        RetrofitClient.getNewsTop().callTopNews(Constanst.COUNTRY, Constanst.API_KEY).enqueue(new Callback<TopNews>() {
-            @Override
-            public void onResponse(Call<TopNews> call, Response<TopNews> response) {
-                Log.e("huy", "onResponse: " + response.body());
-                topNewsAdapter.setmListTopNews(response.body().getArticles());
+        articleViewModel.getNewsLiveData().observe(getActivity(), articleRespone -> {
+            if (articleRespone != null && articleRespone.getArticles() != null && !articleRespone.getArticles().isEmpty()) {
+
+                List<Article> articleList = articleRespone.getArticles();
+                mListTopNews.addAll(articleList);
+                topNewsAdapter.setmListTopNews(mListTopNews);
+                topNewsAdapter.notifyDataSetChanged();
+
                 linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                rcvTopNews.setLayoutManager(linearLayoutManager);
-                rcvTopNews.setAdapter(topNewsAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<TopNews> call, Throwable t) {
-
+                binding.rcvTopNews.setLayoutManager(linearLayoutManager);
+                binding.rcvTopNews.setAdapter(topNewsAdapter);
             }
         });
-
     }
+
 
     @Override
     public void onResume() {
@@ -103,10 +97,10 @@ public class MainFragment extends Fragment {
             @Override
             public void onResponse(Call<TopNews> call, Response<TopNews> response) {
                 Log.e("HuyZinkeng", "onResponse: " + response.body());
-                newsAdapter.setmListNews(response.body().getArticles());
+                newsAdapter.setListNews(response.body().getArticles());
                 linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                rcvEveryNews.setLayoutManager(linearLayoutManager);
-                rcvEveryNews.setAdapter(newsAdapter);
+                binding.rcvEveryNews.setLayoutManager(linearLayoutManager);
+                binding.rcvEveryNews.setAdapter(newsAdapter);
             }
 
             @Override
